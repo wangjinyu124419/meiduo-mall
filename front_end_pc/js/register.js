@@ -1,5 +1,5 @@
 var vm = new Vue({
-	el: '#apps',
+	el: '#app',
 	data: {
 		error_name: false,
 		error_password: false,

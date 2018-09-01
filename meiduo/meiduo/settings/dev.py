@@ -16,10 +16,10 @@ import  sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+print('根目录',BASE_DIR)
 #追加导包路径
 sys.path.append(os.path.join(BASE_DIR,'apps'))
-
+print(sys.path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'meiduo.apps.users.apps.UsersConfig'
     #由用户模型类限制此种注册方式
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'verifications.apps.VerificationsConfig'
 ]
 
 MIDDLEWARE = [
@@ -107,7 +108,16 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
+    },
+    "verify_code": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
+
+
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
