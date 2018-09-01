@@ -187,3 +187,7 @@ LOGGING = {
         },
     }
 }
+REST_FRAMEWORK = {
+    # 异常处理
+    'EXCEPTION_HANDLER': 'meiduo.utils.exceptions.exception_handler',
+}
