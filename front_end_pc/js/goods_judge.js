@@ -1,5 +1,5 @@
 var vm = new Vue({
-    el: '#app',
+    el: '#apps',
     data: {
         score: 0,
         display_score: 0,

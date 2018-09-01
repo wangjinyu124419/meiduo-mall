@@ -12,10 +12,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import  sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#追加导包路径
+sys.path.append(os.path.join(BASE_DIR,'apps'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -39,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    # 'meiduo.apps.users.apps.UsersConfig'
+    #由用户模型类限制此种注册方式
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -191,3 +197,5 @@ REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'meiduo.utils.exceptions.exception_handler',
 }
+#制定默认用户模型类,语法规则必须是'应用名.模型类'
+AUTH_USER_MODEL='users.User'

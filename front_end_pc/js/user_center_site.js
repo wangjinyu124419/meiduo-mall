@@ -1,5 +1,5 @@
 var vm = new Vue({
-    el: '#app',
+    el: '#apps',
     data: {
         host: host,
         user_id: sessionStorage.user_id || localStorage.user_id,
