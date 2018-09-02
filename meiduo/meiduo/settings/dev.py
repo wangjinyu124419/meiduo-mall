@@ -16,9 +16,12 @@ import  sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#/home/python/PycharmProjects/meiduo_mall/meiduo/meiduo
 print('根目录',BASE_DIR)
+
 #追加导包路径
 sys.path.append(os.path.join(BASE_DIR,'apps'))
+#['/home/python/PycharmProjects/meiduo_mall/meiduo', '/home/python/PycharmProjects/meiduo_mall', '/home/python/.virtualenvs/meiduo/lib/python35.zip', '/home/python/.virtualenvs/meiduo/lib/python3.5', '/home/python/.virtualenvs/meiduo/lib/python3.5/plat-x86_64-linux-gnu', '/home/python/.virtualenvs/meiduo/lib/python3.5/lib-dynload', '/usr/lib/python3.5', '/usr/lib/python3.5/plat-x86_64-linux-gnu', '/home/python/.virtualenvs/meiduo/lib/python3.5/site-packages', '/home/python/PycharmProjects/meiduo_mall/meiduo/meiduo/apps']
 print(sys.path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -29,8 +32,8 @@ SECRET_KEY = 't$8(a_p^z%q6+l2ks4ey(#g#^!_1wrg2%5t2szt!amd-yn@r3u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','www.meiduo.site','api.meiduo.site']
 
 # Application definition
 
@@ -42,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
+
     # 'meiduo.apps.users.apps.UsersConfig'
     #由用户模型类限制此种注册方式
     'users.apps.UsersConfig',
@@ -49,6 +54,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # 放在中间件最外层的原因：跨域的问题需要在请求一开始就得到解决，所以需要优先执行，而中间件在处理请求时自上而下
+    'corsheaders.middleware.CorsMiddleware', # 最外层的中间件,
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -209,3 +216,11 @@ REST_FRAMEWORK = {
 }
 #制定默认用户模型类,语法规则必须是'应用名.模型类'
 AUTH_USER_MODEL='users.User'
+# CORS
+CORS_ORIGIN_WHITELIST = (
+'127.0.0.1:8080',
+'localhost:8080',
+'www.meiduo.site:8080',
+'api.meiduo.site:8000',
+)
+CORS_ALLOW_CREDENTIALS = True # 允许携带cookie
