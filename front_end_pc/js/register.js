@@ -158,7 +158,6 @@ var vm = new Vue({
 				})
 		},
 		// 注册
-			// 注册
       on_submit: function(){
           this.check_username();
           this.check_pwd();
@@ -180,7 +179,13 @@ var vm = new Vue({
                       responseType: 'json'
                   })
                   .then(response => {
-                      location.href = '/index.html';
+					sessionStorage.clear();
+					localStorage.clear();
+					localStorage.token = response.data.token;
+					localStorage.username = response.data.username;
+					localStorage.user_id = response.data.id;
+					location.href = '/index.html';
+
                   })
                   .catch(error=> {
                       if (error.response.status == 400) {
