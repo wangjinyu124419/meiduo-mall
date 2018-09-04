@@ -20,7 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print('根目录',BASE_DIR)
 
 #追加导包路径
-sys.path.append(os.path.join(BASE_DIR,'apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+
+# sys.path.append(os.path.join(BASE_DIR,'apps'))
 #['/home/python/PycharmProjects/meiduo_mall/meiduo', '/home/python/PycharmProjects/meiduo_mall', '/home/python/.virtualenvs/meiduo/lib/python35.zip', '/home/python/.virtualenvs/meiduo/lib/python3.5', '/home/python/.virtualenvs/meiduo/lib/python3.5/plat-x86_64-linux-gnu', '/home/python/.virtualenvs/meiduo/lib/python3.5/lib-dynload', '/usr/lib/python3.5', '/usr/lib/python3.5/plat-x86_64-linux-gnu', '/home/python/.virtualenvs/meiduo/lib/python3.5/site-packages', '/home/python/PycharmProjects/meiduo_mall/meiduo/meiduo/apps']
 print(sys.path)
 # Quick-start development settings - unsuitable for production
@@ -44,13 +46,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'corsheaders',
+    # 'rest_framework',
+    # 'corsheaders',
+    #
+    # # 'meiduo.apps.users.apps.UsersConfig'
+    # #由用户模型类限制此种注册方式
+    # 'users.apps.UsersConfig',
+    # 'verifications.apps.VerificationsConfig'
 
-    # 'meiduo.apps.users.apps.UsersConfig'
-    #由用户模型类限制此种注册方式
-    'users.apps.UsersConfig',
-    'verifications.apps.VerificationsConfig'
+
+    'rest_framework', # DRF
+    'corsheaders', # JS跨域请求问题
+
+    # 'meiduo_mall.apps.users.apps.UsersConfig', # 用户模块
+    'users.apps.UsersConfig', # 用户模块，由用户模型类限制的此种注册方式
+    'verifications.apps.VerificationsConfig' # 验证模块
 ]
 
 MIDDLEWARE = [
@@ -116,7 +126,7 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "verify_code": {
+    "verify_codes": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1/2",
         "OPTIONS": {

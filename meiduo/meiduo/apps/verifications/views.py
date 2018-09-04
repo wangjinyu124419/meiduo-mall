@@ -13,7 +13,7 @@ logger=logging.getLogger('django')
 
 class SMScodeview(APIView):
     def get(self,request,mobile):
-        myredis = get_redis_connection('verify_code')
+        myredis = get_redis_connection('verify_codes')
         send_flag=myredis.get('send_flag_%s'%mobile)
         if send_flag:
             return Response({'message':'60秒重复发送'},status=status.HTTP_400_BAD_REQUEST)
@@ -32,5 +32,5 @@ class SMScodeview(APIView):
         #使用容联发短信
         # CCP().send_template_sms(mobile,[sms_code, constants.SMS_CODE_REDIS_EXPIRES//60],1)
         #delay调用异步任务
-        sms_send_code.delay(mobile,sms_code)
+        # sms_send_code.delay(mobile,sms_code)
         return  Response({'message':'ok'})
