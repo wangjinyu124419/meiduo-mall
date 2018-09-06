@@ -46,13 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'rest_framework',
-    # 'corsheaders',
-    #
-    # # 'meiduo.apps.users.apps.UsersConfig'
-    # #由用户模型类限制此种注册方式
-    # 'users.apps.UsersConfig',
-    # 'verifications.apps.VerificationsConfig'
+
 
 
     'rest_framework', # DRF
@@ -60,7 +54,8 @@ INSTALLED_APPS = [
 
     # 'meiduo_mall.apps.users.apps.UsersConfig', # 用户模块
     'users.apps.UsersConfig', # 用户模块，由用户模型类限制的此种注册方式
-    'verifications.apps.VerificationsConfig' # 验证模块
+    'verifications.apps.VerificationsConfig', # 验证模块
+    'oauth.apps.OauthConfig',
 ]
 
 MIDDLEWARE = [
@@ -223,9 +218,25 @@ LOGGING = {
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'meiduo.utils.exceptions.exception_handler',
+    # 认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # JWT认证，在前面的认证方案优先
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
+
+# JWT_AUTH = {
+#     # WT的有效期
+#     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+#     # 为JWT登录视图补充返回值
+#     'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
+#
+# }
+
 JWT_AUTH = {
 'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+
 #重新指定JWT_RESPONSE_PAYLOAD_HANDLER方法
 'JWT_RESPONSE_PAYLOAD_HANDLER':'users.utils.jwt_response_payload_handler',
 }
@@ -243,3 +254,9 @@ CORS_ORIGIN_WHITELIST = (
 'api.meiduo.site:8000',
 )
 CORS_ALLOW_CREDENTIALS = True # 允许携带cookie
+
+
+# QQ登录参数
+QQ_CLIENT_ID = '101474184'
+QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'
+QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html'

@@ -3,7 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 # url(r'^users/$', views.UserView.as_view()),
 # url(r'^usernames/(?P<username>\w{5,20})/count/$', views.UsernameCountView.as_view()),
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,6 +14,16 @@ from . import serializers
 
 # url(r'^users/$', views.UserView.as_view()),
 
+class UserDetailView(RetrieveAPIView):
+    """
+    用户详情
+    """
+    serializer_class = serializers.UserDetailSerializer
+    # permission_classes = [IsAuthenticated]
+
+    #重写get方法
+    def get_object(self):
+        return self.request.user
 
 class UserView(CreateAPIView):
     """
