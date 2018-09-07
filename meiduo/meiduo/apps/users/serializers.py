@@ -3,10 +3,34 @@ import re
 from django_redis import get_redis_connection
 from rest_framework import serializers
 
+from celery_tasks.email.tasks import send_verify_email
 from .models import User
 from rest_framework_jwt.settings import api_settings
 
+class EmailSerializer(serializers.ModelSerializer):
+    """
+    邮箱序列化器
+    """
+    class Meta:
+        model = User
+        fields = ('id', 'email')
+        extra_kwargs = {
+            'email': {
+                'required': True
+            }
+        }
+    #只对email字段进行存储,
+    #后续还会发邮件, 需要更新数据之后,返回响应前发送邮件
+    # 所以要update方法
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data['email']
+        instance.save()
+
+        # 更新邮箱之后,响应之前,发送验证邮件
+        verify_url=instance.generate_email_verify_url()
+        send_verify_email.delay(instance.email,verify_url)
+        return instance
 
 class UserDetailSerializer(serializers.ModelSerializer):
     """
