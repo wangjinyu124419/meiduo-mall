@@ -3,19 +3,56 @@ from django.shortcuts import render
 # Create your views here.
 # url(r'^users/$', views.UserView.as_view()),
 # url(r'^usernames/(?P<username>\w{5,20})/count/$', views.UsernameCountView.as_view()),
-from rest_framework import status
+from rest_framework import status,mixins
 from rest_framework.generics import CreateAPIView, RetrieveAPIView,UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .models import User
+from rest_framework.viewsets import GenericViewSet
+from . import constants
+from .models import User,Address
 from . import serializers
 
 # url(r'^email/verificaion/$', views.VerifyEmailView.as_view()),
 
+class AddressViewSet(mixins.CreateModelMixin,GenericViewSet):
+    serializer_class = serializers.UserAddressSerializer
+    permission_classes = [IsAuthenticated]
+    def create(self,request,*args,**kwargs):
+        #判断用户地址是否大于上限20
 
+        # count=requset.user.addresses.count()
+        count=Address.objects.filter(user=request.user).count()
+        if count>constants.USER_ADDRESS_COUNTS_LIMIT:
+            return Response({'message':'超出上限'},status=status.HTTP_400_BAD_REQUEST)
 
+        return super().create(request,*args,**kwargs)
+        # serializer=self.get_serializer(data=requset.data)
+        # serializer.is_valid(raise_exception=True)
+        #
+        #
+        # serializer.save()
+        #
+        # #restful风格约束如果新增数据就要返回
+        # return Response(serializer.data,status=status.HTTP_201_CREATED)
+        #
+
+    def get_queryset(self):
+        return self.request.user.addresses.filter(is_deleted=False)
+
+    def list(self, request, *args, **kwargs):
+        """
+        用户地址列表数据
+        """
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        user = self.request.user
+        return Response({
+            'user_id': user.id,
+            'default_address_id': user.default_address_id,
+            'limit': constants.USER_ADDRESS_COUNTS_LIMIT,
+            'addresses': serializer.data,
+        })
 
 class VerifyEmailView(APIView):
     def get(self,requset):
