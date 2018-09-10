@@ -57,6 +57,10 @@ INSTALLED_APPS = [
     'verifications.apps.VerificationsConfig', # 验证模块
     'oauth.apps.OauthConfig',
     'areas.apps.AreasConfig',
+    'contents.apps.ContentsConfig',
+    'goods.apps.GoodsConfig',
+    'ckeditor', # 富⽂文本编辑器器
+    'ckeditor_uploader', # 富⽂文本编辑器器上传图⽚片模块
 ]
 
 MIDDLEWARE = [
@@ -130,8 +134,16 @@ CACHES = {
         }
     }
 
-
 }
+
+REST_FRAMEWORK_EXTENSIONS = {
+    # 缓存时间
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60,
+    # 缓存存储
+    'DEFAULT_USE_CACHE': 'default',
+}
+
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
 
@@ -274,3 +286,20 @@ EMAIL_HOST_USER = 'wangjinyu124419@163.com'
 EMAIL_HOST_PASSWORD = 'wangjinyu124419'
 #收件人看到的发件人
 EMAIL_FROM = 'wangjinyu<wangjinyu124419@163.com>'
+
+FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
+
+# django⽂文件存储
+DEFAULT_FILE_STORAGE = 'meiduo.utils.fastdfs.file_storage.Fastdfsstorage'
+# FastDFS
+FDFS_BASE_URL = 'http://192.168.188.143:8888/'
+
+# 富⽂文本编辑器器ckeditor配置
+CKEDITOR_CONFIGS = {
+'default': {
+'toolbar': 'full', # ⼯工具条功能
+'height': 300, # 编辑器器⾼高度
+# 'width': 300, # 编辑器器宽
+},
+}
+CKEDITOR_UPLOAD_PATH = '' # 上传图⽚片保存路路径，使⽤用了了FastDFS，所以此处设为''
