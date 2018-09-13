@@ -6,6 +6,40 @@ from rest_framework import serializers
 from celery_tasks.email.tasks import send_verify_email
 from .models import User,Address
 from rest_framework_jwt.settings import api_settings
+from goods.models import SKU
+
+
+class SKUSerializer(serializers.ModelSerializer):
+    """序列列化器器序输出商品SKU信息"""
+    class Meta:
+        model = SKU
+        # 输出：序列列化的字段
+        fields = ('id', 'name', 'price', 'default_image_url', 'comments')
+
+class UserBrowsingHistorySerializer(serializers.Serializer):
+
+    sku_id=serializers.IntegerField(label='商品ID',min_value=1,)
+    def validate_sku_id(self, value):
+        try:
+            SKU.objects.get(id=value)
+        except SKU.DoesNotExist:
+            raise serializers.ValidationError('sku_id不存在')
+        return value
+    def create(self, validated_data):
+        #validated_data{'sku_id':1}
+        #重写create方法将validated_data保存到redis
+        sku_id=validated_data.get('sku_id')
+        user_id=self.context['request'].user.id
+        redis_conn=get_redis_connection('history')
+        pl=redis_conn.pipeline()
+        pl.lrem('history_%s'%user_id,0,sku_id)
+        pl.lpush('history_%s'%user_id,sku_id)
+        pl.ltrim('history_%s'%user_id,0,4)
+        pl.execute()
+        return validated_data
+
+
+
 
 
 

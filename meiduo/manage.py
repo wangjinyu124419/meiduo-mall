@@ -2,6 +2,8 @@
 import os
 import sys
 
+# from contents.crons import generate_static_index_html
+
 if __name__ == "__main__":
     #使用meiduo.settings.dev配置文件启动开发环境项目
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "meiduo.settings.dev")
@@ -21,3 +23,5 @@ if __name__ == "__main__":
             )
         raise
     execute_from_command_line(sys.argv)
+
+

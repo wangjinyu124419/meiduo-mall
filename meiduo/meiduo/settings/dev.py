@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'goods.apps.GoodsConfig',
     'ckeditor', # 富⽂文本编辑器器
     'ckeditor_uploader', # 富⽂文本编辑器器上传图⽚片模块
+    'django_crontab',
+    'haystack',#对接搜索引擎
 ]
 
 MIDDLEWARE = [
@@ -80,7 +82,7 @@ ROOT_URLCONF = 'meiduo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,6 +131,20 @@ CACHES = {
     "verify_codes": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "history": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://127.0.0.1/3",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        },
+    "cart": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:/4",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -237,6 +253,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'meiduo.utils.pagination.StandardResultsSetPagination',
 }
 
 # JWT_AUTH = {
@@ -303,3 +320,26 @@ CKEDITOR_CONFIGS = {
 },
 }
 CKEDITOR_UPLOAD_PATH = '' # 上传图⽚片保存路路径，使⽤用了了FastDFS，所以此处设为''
+GENERATED_STATIC_HTML_FILES_DIR = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'front_end_pc')
+
+# 定时任务
+CRONJOBS = [
+    # 每5分钟执行一次生成主页静态文件
+    # ('*/1* * * *', 'contents.crons.generate_static_index_html','/home/python/PycharmProjects')
+    ('*/1 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo_mall/meiduo/logs/crontab.log')
+]
+# 解决crontab中文问题
+CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
+
+
+# Haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://192.168.188.143:9200/',  # 此处为elasticsearch运行的服务器ip地址，端口号固定为9200
+        'INDEX_NAME': 'meiduo',  # 指定elasticsearch建立的索引库的名称
+    },
+}
+
+# 当添加、修改、删除数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

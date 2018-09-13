@@ -9,10 +9,39 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
+
+# from .models import SKU
+from goods.models import SKU
+from .serializers import UserBrowsingHistorySerializer, SKUSerializer
 from . import constants
 from .models import User,Address
 from . import serializers
 from rest_framework.decorators import action
+from django_redis import get_redis_connection
+# url(r'^browse_histories/$', views.UserBrowsingHistoryView.as_view())
+class UserBrowsingHistoryView(CreateAPIView):
+    """
+    用户浏览历史记录
+    """
+    serializer_class = UserBrowsingHistorySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        #获取链接到redis的对象
+        redis_con=get_redis_connection('history')
+        #查询redis浏览记录
+        sku_ids=redis_con.lrange('history_%s'%request.user.id,0,-1)
+        #使用sku_id查出sku
+        sku_list=[]
+        for sku_id in sku_ids:
+            sku=SKU.objects.get(id=sku_id)
+            sku_list.append(sku)
+        #序列化sku_list
+        serializer=SKUSerializer(sku_list,many=True)
+        return Response(serializer.data)
+
+
+
 
 
 # url(r'^email/verificaion/$', views.VerifyEmailView.as_view()),
