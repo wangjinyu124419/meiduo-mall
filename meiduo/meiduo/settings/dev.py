@@ -17,14 +17,14 @@ import  sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #/home/python/PycharmProjects/meiduo_mall/meiduo/meiduo
-print('根目录',BASE_DIR)
+# print('根目录',BASE_DIR)
 
 #追加导包路径
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # sys.path.append(os.path.join(BASE_DIR,'apps'))
 #['/home/python/PycharmProjects/meiduo_mall/meiduo', '/home/python/PycharmProjects/meiduo_mall', '/home/python/.virtualenvs/meiduo/lib/python35.zip', '/home/python/.virtualenvs/meiduo/lib/python3.5', '/home/python/.virtualenvs/meiduo/lib/python3.5/plat-x86_64-linux-gnu', '/home/python/.virtualenvs/meiduo/lib/python3.5/lib-dynload', '/usr/lib/python3.5', '/usr/lib/python3.5/plat-x86_64-linux-gnu', '/home/python/.virtualenvs/meiduo/lib/python3.5/site-packages', '/home/python/PycharmProjects/meiduo_mall/meiduo/meiduo/apps']
-print(sys.path)
+# print(sys.path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
