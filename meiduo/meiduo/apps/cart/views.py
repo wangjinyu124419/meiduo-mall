@@ -61,7 +61,7 @@ class CartSelectAllView(APIView):
             return response
 
 
-# Create your views here.
+# Create your views here.merge_cart_cookie_to_redis
 class CartView(APIView):
     #购物车增删改查
 

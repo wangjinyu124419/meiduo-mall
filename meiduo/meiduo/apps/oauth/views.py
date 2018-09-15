@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 import  logging
 from rest_framework.generics import GenericAPIView
 # from itsdangerous import  TimedJSONWebSignatureSerializer as TJSSerializer
+from cart.utils import merge_cart_cookie_to_redis
 from .serializer import QQAuthUserSerializer
 from .models import OAuthQQUser
 from .utils import generate_save_user_token
@@ -62,11 +63,15 @@ class QQAuthUserView(GenericAPIView):
             user = openid_user.user
             payload = jwt_payload_handler(user)
             token = jwt_encode_handler(payload)
-            return Response({
+            response=Response({
                 'token': token,
                 'user_id': user.id,
                 'username': user.username
             })
+
+            response=merge_cart_cookie_to_redis(request=request,user=user,response=response)
+
+            return response
         # 如果openid已绑定美多商城⽤用户，直接⽣生成JWT token，并返回
     def post(self,requset):
         serializer=self.get_serializer(data=requset.data)

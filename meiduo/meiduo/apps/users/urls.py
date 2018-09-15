@@ -2,6 +2,7 @@ from django.conf.urls import url
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token
 
+from users.views import UserAuthorizeView
 from . import views
 # from meiduo.apps.users import views
 
@@ -13,7 +14,9 @@ urlpatterns = [
     # 注册
     url(r'^users/$', views.UserView.as_view()),
     # JWT登录
-    url(r'^authorizations/$', obtain_jwt_token),
+    # url(r'^authorizations/$', obtain_jwt_token),
+    #重写JTW登陆,合并购物车
+    url(r'^authorizations/$', UserAuthorizeView.as_view()),
     # 用户基本信息
     url(r'^user/$', views.UserDetailView.as_view()),
     # 添加邮箱
