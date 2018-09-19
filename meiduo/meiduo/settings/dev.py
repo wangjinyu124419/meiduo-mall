@@ -47,22 +47,31 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #这部分需要放在上面,不然模型类迁移找督导模块ImportError: No module named 'orders.apps.OrdersConfigcorsheaders'; 'orders.apps' is not a package
 
-
-    'rest_framework', # DRF
-    'corsheaders', # JS跨域请求问题
+    'rest_framework',  # DRF
+    'corsheaders',  # JS跨域请求问题
+    'ckeditor',  # 富⽂文本编辑器器
+    'ckeditor_uploader',  # 富⽂文本编辑器器上传图⽚片模块
+    'django_crontab',  # 定时任务
+    'haystack',  # 对接搜索引擎
 
     # 'meiduo_mall.apps.users.apps.UsersConfig', # 用户模块
     'users.apps.UsersConfig', # 用户模块，由用户模型类限制的此种注册方式
     'verifications.apps.VerificationsConfig', # 验证模块
-    'oauth.apps.OauthConfig',
-    'areas.apps.AreasConfig',
-    'contents.apps.ContentsConfig',
-    'goods.apps.GoodsConfig',
-    'ckeditor', # 富⽂文本编辑器器
-    'ckeditor_uploader', # 富⽂文本编辑器器上传图⽚片模块
-    'django_crontab',
-    'haystack',#对接搜索引擎
+    'oauth.apps.OauthConfig',#qq登陆模块
+    'areas.apps.AreasConfig',#地址模块
+    'contents.apps.ContentsConfig',#主页模块
+    'goods.apps.GoodsConfig',#商品模块
+    'orders.apps.OrdersConfig', #订单模块
+    'payment.apps.PaymentConfig',#支付模块
+
+
+
+
+
+
+
 ]
 
 MIDDLEWARE = [
@@ -309,7 +318,7 @@ FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 # django⽂文件存储
 DEFAULT_FILE_STORAGE = 'meiduo.utils.fastdfs.file_storage.Fastdfsstorage'
 # FastDFS
-FDFS_BASE_URL = 'http://192.168.188.143:8888/'
+FDFS_BASE_URL = 'http://192.168.231.128:8888/'
 
 # 富⽂文本编辑器器ckeditor配置
 CKEDITOR_CONFIGS = {
@@ -326,7 +335,7 @@ GENERATED_STATIC_HTML_FILES_DIR = os.path.join(os.path.dirname(os.path.dirname(B
 CRONJOBS = [
     # 每5分钟执行一次生成主页静态文件
     # ('*/1* * * *', 'contents.crons.generate_static_index_html','/home/python/PycharmProjects')
-    ('*/1 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo_mall/meiduo/logs/crontab.log')
+    ('*/5 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo_mall/meiduo/logs/crontab.log')
 ]
 # 解决crontab中文问题
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
@@ -336,10 +345,15 @@ CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://192.168.188.143:9200/',  # 此处为elasticsearch运行的服务器ip地址，端口号固定为9200
+        'URL': 'http://192.168.231.128:9200/',  # 此处为elasticsearch运行的服务器ip地址，端口号固定为9200
         'INDEX_NAME': 'meiduo',  # 指定elasticsearch建立的索引库的名称
     },
 }
 
 # 当添加、修改、删除数据时，自动生成索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# 支付宝
+ALIPAY_APPID = "2016092100563789"
+ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"
+ALIPAY_DEBUG = True
