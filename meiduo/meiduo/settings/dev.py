@@ -56,6 +56,11 @@ INSTALLED_APPS = [
     'django_crontab',  # 定时任务
     'haystack',  # 对接搜索引擎
 
+    #下面三个是xadmin应用
+    'xadmin',
+    'crispy_forms',
+    'reversion',
+
     # 'meiduo_mall.apps.users.apps.UsersConfig', # 用户模块
     'users.apps.UsersConfig', # 用户模块，由用户模型类限制的此种注册方式
     'verifications.apps.VerificationsConfig', # 验证模块
@@ -118,7 +123,15 @@ DATABASES = {
         'USER': 'meiduo',  # 数据库用户名
         'PASSWORD': '124419',  # 数据库用户密码
         'NAME': 'meiduodb'  # 数据库名字
-    }
+    },
+    'slave': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',  # 数据库主机
+            'PORT': 8306,  # 数据库端口
+            'USER': 'root',  # 数据库用户名
+            'PASSWORD': 'mysql',  # 数据库用户密码
+            'NAME': 'meiduodb'  # 数据库名字
+        }
 }
 
 #配置redis
@@ -357,3 +370,6 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 ALIPAY_APPID = "2016092100563789"
 ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"
 ALIPAY_DEBUG = True
+
+# 配置读写分离
+DATABASE_ROUTERS = ['meiduo.utils.db_router.MasterSlaveDBRouter']

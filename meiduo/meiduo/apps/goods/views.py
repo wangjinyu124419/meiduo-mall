@@ -12,7 +12,7 @@ from drf_haystack.viewsets import HaystackViewSet
 
 class SKUSearchViewSet(HaystackViewSet):
     """
-    SKU搜索
+    SKU搜索f
     """
     index_models = [SKU]
 
